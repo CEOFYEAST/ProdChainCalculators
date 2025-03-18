@@ -43,6 +43,30 @@ function recalculateTimeUnit(prodChainObject, oldTimeUnit, newTimeUnit) {
     return prodChainObject
 }
 
+function createProductionChain(){
+    let toReturn = {
+        timeUnit: "minute",
+        prodChain: {
+
+        }
+    }
+
+    return toReturn
+}
+
+function createProductionChain(timeUnit){
+    validators.validateTimeUnit(timeUnit)
+
+    let toReturn = {
+        timeUnit: timeUnit,
+        prodChain: {
+            
+        }
+    }
+
+    return toReturn
+}
+
 export {
-    getUserDemand, recalculateTimeUnit
+    getUserDemand, recalculateTimeUnit, createProductionChain
 }
