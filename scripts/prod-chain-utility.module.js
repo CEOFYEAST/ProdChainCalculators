@@ -46,9 +46,7 @@ function recalculateTimeUnit(prodChainObject, oldTimeUnit, newTimeUnit) {
 function createProductionChain(){
     let toReturn = {
         timeUnit: "minute",
-        prodChain: {
-
-        }
+        prodChain: {}
     }
 
     return toReturn
@@ -59,9 +57,7 @@ function createProductionChain(timeUnit){
 
     let toReturn = {
         timeUnit: timeUnit,
-        prodChain: {
-            
-        }
+        prodChain: {}
     }
 
     return toReturn
