@@ -6,6 +6,10 @@ A package used to create, modify, and parse data representations of production c
 
 Functionality of the package is exported throgh two main modules, irptu (at prodchaincalculators/irptu) and utility (at prodchaincalculators/utility). The irptu module exposes methods to add and subtract user demand for individual items from a production chain; the demand for the intermediary items required to make said item is updated accordingly. The utility module exposes methods to create, parse, and recalculate a production chain. 
 
+## Installation
+
+
+
 ## Keep Up With Updates
 
 Link:
