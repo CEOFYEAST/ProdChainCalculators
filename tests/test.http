@@ -1,0 +1,42 @@
+### GET BUILD FILES
+GET http://localhost:3000/ HTTP/1.1
+
+### GET ALL ITEMS
+GET http://localhost:3000/items HTTP/1.1
+
+### GET SINGLE ITEM
+GET http://localhost:3000/items/1 HTTP/1.1
+
+### ADD ITEM
+POST http://localhost:3000/items HTTP/1.1
+Content-Type: application/json
+
+{
+    "name": "New Item"
+}
+
+### CREATE USER
+POST http://localhost:3000/users/create HTTP/1.1
+Content-Type: application/json
+
+{
+    "username": "hellowWorld",
+    "userPassword": "userPassword"
+}
+
+### ACCESS USER
+POST http://localhost:3000/users/access HTTP/1.1
+Content-Type: application/json
+
+{
+    "username": "hellowWorld",
+    "userPassword": "userPassword"
+}
+
+### ACCESS ROOT
+GET http://localhost:3000/ HTTP/1.1
+
+
+### ACCESS API DOCS
+GET http://localhost:3000/documentation HTTP/1.1
+

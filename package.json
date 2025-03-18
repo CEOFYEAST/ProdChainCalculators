@@ -1,0 +1,21 @@
+{
+  "name": "fpccalculators",
+  "version": "1.0.0",
+  "description": "Contains modules used to generate, modify, and parse production chains",
+  "type": "module",
+  "scripts": {
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
+  },
+  "author": "ceofyeast",
+  "license": "ISC",
+  "exports": {
+    "./irptu": "./scripts/prod-chain-irptu.module.js",
+    "./utility": "./scripts/prod-chain-utility.module.js"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  },
+  "dependencies": {
+    "node": "^20.19.0"
+  }
+}
