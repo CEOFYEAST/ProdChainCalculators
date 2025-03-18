@@ -2,9 +2,12 @@
 
 export let emptyProdChain = {
     timeUnit: "minute",
-    prodChain: {
-        
-    }
+    prodChain: {}
+}
+
+export let emptyProdChain_Second = {
+    timeUnit: "second",
+    prodChain: {}
 }
 
 export let simpleProdChain = {
