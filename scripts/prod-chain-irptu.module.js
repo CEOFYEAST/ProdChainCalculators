@@ -27,6 +27,7 @@ function addIRPTU(itemID, amount, prodChainObject, timeUnit) {
     Validators.validateIRPTUAddition(amount)
 
     let prodChainData = prodChainObject["prodChain"]
+    Validators.validateProdChainData(prodChainData)
     let demandInfoOutput = {}
     Calculators.calculateIntermediaryDemand(itemID, amount, demandInfoOutput)
     Calculators.updateProdChainIntermediaryDemand(prodChainData, demandInfoOutput)
@@ -50,6 +51,7 @@ function subtractIRPTU(itemID, amount, prodChainObject, timeUnit) {
     Validators.validateNumber(amount)
     Validators.validateProdChainObject(prodChainObject)
     let prodChainData = prodChainObject["prodChain"]
+    Validators.validateProdChainData(prodChainData)
     if (arguments.length === 4) {
         Validators.validateTimeUnit(timeUnit)
         amount = amount * getTimeUnitConversionRatio(timeUnit, prodChainObject["timeUnit"])

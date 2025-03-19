@@ -50,11 +50,22 @@ export function validateProdChainObject(prodChainObject) {
     ensureNonNullish(prodChainObject);
     validateObject(prodChainObject);
     if (!(prodChainObject.hasOwnProperty("prodChain")) || !(prodChainObject.hasOwnProperty("timeUnit"))) {
-        let err = Error("Supplied production chain is invalid");
+        let err = Error("Supplied production chain object is invalid");
         throw err.stack;
     }
 
     validateTimeUnit(prodChainObject["timeUnit"])
+}
+
+export function validateProdChainData(prodChainData) {
+    ensureNonNullish(prodChainData);
+    validateObject(prodChainData);
+    for (let key in prodChainData) {
+        if (!validIDs.includes(key)) {
+            let err = Error("Invalid key '" + key + "' in production chain data\n");
+            throw err.stack;
+        }
+    }
 }
 
 export function validateObject(val){

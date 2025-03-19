@@ -35,13 +35,13 @@ test('Test invalid time unit input for recalculation throws exeption', () => {
 
 test('Test valid simple prod. chain conversion to seconds', () => {
     let toTest = deepCopy(SampleChains.simpleProdChain)
-    expect(recalculateTimeUnit(toTest, "minute", "second"))
+    expect(recalculateTimeUnit(toTest, "second"))
         .toEqual(SampleChains.simpleProdChain_Seconds)
 })
 
 test('Test valid simple prod. chain conversion to hours', () => {
     let toTest = deepCopy(SampleChains.simpleProdChain)
-    expect(recalculateTimeUnit(toTest, "minute", "hour"))
+    expect(recalculateTimeUnit(toTest, "hour"))
         .toEqual(SampleChains.simpleProdChain_Hours)
 })
 

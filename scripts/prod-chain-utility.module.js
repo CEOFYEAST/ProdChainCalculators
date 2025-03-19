@@ -8,6 +8,8 @@ import { getTimeUnitConversionRatio } from "./helpers.module.js"
 import * as validators from "./validators.module.js"
 
 function getUserDemand(prodChainData) {
+    validators.validateProdChainData(prodChainData)
+
     let userDemandData = {}
     for(let itemID in prodChainData){
         let itemUserDemand = prodChainData[itemID]["userIRPTU"]
@@ -16,10 +18,11 @@ function getUserDemand(prodChainData) {
     return userDemandData
 }
 
-function recalculateTimeUnit(prodChainObject, oldTimeUnit, newTimeUnit) {
+function recalculateTimeUnit(prodChainObject, newTimeUnit) {
     validators.validateProdChainObject(prodChainObject)
     validators.validateTimeUnit(newTimeUnit)
 
+    let oldTimeUnit = prodChainObject["timeUnit"]
     let ratio = getTimeUnitConversionRatio(oldTimeUnit, newTimeUnit)
 
     let prodChainData = prodChainObject["prodChain"]
