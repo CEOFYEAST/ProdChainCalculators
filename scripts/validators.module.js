@@ -5,6 +5,7 @@
  */
 
 import {recipes, validIDs} from "./recipes.module.js"
+import {validTimeUnits} from "./helpers.module.js"
  
 export function ensureNonNullish(val)
 {
@@ -81,7 +82,6 @@ export function validateTimeUnit(timeUnit){
         throw err.stack;
     }
 
-    const validTimeUnits = ["second", "minute", "hour"];
     if (!validTimeUnits.includes(timeUnit)) {
         let err = Error("Time unit must be one of 'second', 'minute', or 'hour'\n");
         throw err.stack;

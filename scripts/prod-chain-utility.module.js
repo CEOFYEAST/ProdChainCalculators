@@ -4,7 +4,7 @@
  * @author ceofyeast
  */
 
-import {recipes,validIDs} from "./recipes.module.js"
+import { getTimeUnitConversionRatio } from "./helpers.module.js"
 import * as validators from "./validators.module.js"
 
 function getUserDemand(prodChainData) {
@@ -20,13 +20,7 @@ function recalculateTimeUnit(prodChainObject, oldTimeUnit, newTimeUnit) {
     validators.validateProdChainObject(prodChainObject)
     validators.validateTimeUnit(newTimeUnit)
 
-    let ratio = 1
-    const timeUnitsInSeconds = {
-        "second": 1,
-        "minute": 60,
-        "hour": 3600
-    };
-    ratio = timeUnitsInSeconds[newTimeUnit] / timeUnitsInSeconds[oldTimeUnit];
+    let ratio = getTimeUnitConversionRatio(oldTimeUnit, newTimeUnit)
 
     let prodChainData = prodChainObject["prodChain"]
     for(let itemID in prodChainData){

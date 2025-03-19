@@ -6,9 +6,18 @@
 
 import * as Validators from "./validators.module.js"
 import * as Calculators from "./irptu-calculators.module.js"
+import { getTimeUnitConversionRatio } from "./helpers.module.js"
 import {deepCopy} from "./helpers.module.js"
 
-function addIRPTU(itemID, amount, prodChainObject) {
+/**
+ * Adds a given amount of demand per time unit of a given item to a given production chain object
+ * @param {*The ID of the item being added to the production chain} itemID 
+ * @param {*The amount of the item required per time unit} amount 
+ * @param {*The production chain data being added to} prodChainObject 
+ * @param {*(Optional) The time unit of the request; used to convert the required amount to the time unit of the production chain} timeUnit 
+ * @returns THe updated production chain
+ */
+function addIRPTU(itemID, amount, prodChainObject, timeUnit) {
     let inputCopy = deepCopy(prodChainObject);
 
     Validators.validateID(itemID)
@@ -27,7 +36,15 @@ function addIRPTU(itemID, amount, prodChainObject) {
     return inputCopy;
 }
 
-function subtractIRPTU(itemID, amount, prodChainObject) {
+/**
+ * Subtracts a given amount of demand per time unit of a given item from a given production chain object
+ * @param {*The ID of the item being removed from the production chain} itemID 
+ * @param {*The amount of the item being removed per time unit} amount 
+ * @param {*The production chain data being subtracted from} prodChainObject 
+ * @param {*(Optional) The time unit of the request; used to convert the required amount to the time unit of the production chain} timeUnit 
+ * @returns The updated production chain
+ */
+function subtractIRPTU(itemID, amount, prodChainObject, timeUnit) {
     let inputCopy = deepCopy(prodChainObject);
 
     Validators.validateID(itemID)
