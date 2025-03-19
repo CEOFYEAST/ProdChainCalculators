@@ -7,7 +7,6 @@
 import * as Validators from "./validators.module.js"
 import * as Calculators from "./irptu-calculators.module.js"
 import { getTimeUnitConversionRatio } from "./helpers.module.js"
-import {deepCopy} from "./helpers.module.js"
 
 /**
  * Adds a given amount of demand per time unit of a given item to a given production chain object

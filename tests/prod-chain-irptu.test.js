@@ -42,7 +42,17 @@ test('Test empty prod. chain time unit input throws exception', () => {
     }).toThrow()
 
     expect(() => {
-        subtractIRPTU("burner-inserter", 5, SampleChains.invalidProdChain_NoProdChain)
+        subtractIRPTU("burner-inserter", 5, SampleChains.invalidProdChain_NoTimeUnit)
+    }).toThrow()
+})
+
+test('Test invalid prod. chain time unit input throws exception', () => {
+    expect(() => {
+        addIRPTU("burner-inserter", 5, SampleChains.invalidProdChain_InvalidTimeUnit)
+    }).toThrow()
+
+    expect(() => {
+        subtractIRPTU("burner-inserter", 5, SampleChains.invalidProdChain_InvalidTimeUnit)
     }).toThrow()
 })
 
@@ -84,6 +94,10 @@ test('Test full prod. chain output after IRPTU addition, and empty initial chain
     expect(addIRPTU("burner-inserter", 10, deepCopy(SampleChains.emptyProdChain))).toEqual(SampleChains.simpleProdChain)
 })
 
+test('Test full prod. chain output after IRPTU addition including hours time unit, and empty initial chain', () => {
+    expect(addIRPTU("burner-inserter", 600, deepCopy(SampleChains.emptyProdChain), "hour")).toEqual(SampleChains.simpleProdChain)
+})
+
 test('Test user demand output after IRPTU addition, and empty initial chain', () => {
     expect(addIRPTU("burner-inserter", 10, deepCopy(SampleChains.emptyProdChain))).toMatchObject(SampleChains.simpleUserDemand)
 })
@@ -119,6 +133,11 @@ test('Test empty prod. chain output after full IRPTU subtraction', () => {
 test('Test partial prod. chain output after partial IRPTU subtraction', () => {
     let popChain = addIRPTU("burner-inserter", 10, deepCopy(SampleChains.emptyProdChain))
     expect(subtractIRPTU("burner-inserter", 5, popChain)).toEqual(SampleChains.partialProdChain)
+})
+
+test('Test partial prod. chain output after partial IRPTU subtraction, including hours time unit', () => {
+    let popChain = addIRPTU("burner-inserter", 10, deepCopy(SampleChains.emptyProdChain))
+    expect(subtractIRPTU("burner-inserter", 300, popChain, "hour")).toEqual(SampleChains.partialProdChain)
 })
 
 
