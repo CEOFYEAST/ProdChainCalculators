@@ -54,6 +54,7 @@ export function validateProdChainObject(prodChainObject) {
         throw err.stack;
     }
 
+    validateTimeUnit(prodChainObject["timeUnit"])
 }
 
 export function validateObject(val){
@@ -83,32 +84,30 @@ export function validateTimeUnit(timeUnit){
     }
 
     if (!validTimeUnits.includes(timeUnit)) {
-        let err = Error("Time unit must be one of 'second', 'minute', or 'hour'\n");
+        let err = Error("Time unit must be one of " + validTimeUnits.join(', ') + "\n");
         throw err.stack;
     }
 }
 
-export function validateURPSAddition(amount){
+export function validateIRPTUAddition(amount){
     if(amount <= 0) {
         let err = Error("Invalid Addition Amount\n");
         throw err.stack;
     }
 }
 
-export function validateURPSSubtraction(itemID, amount, prodChainData){
+export function validateIRPTUSubtraction(itemID, amount, prodChainData){
     if (prodChainData.hasOwnProperty(itemID)) {
         let itemData = prodChainData[itemID];
         let existingItemDemand = itemData["userIRPTU"];
 
-        // attempting to remove more input URPS than the input item already has
         if (amount > existingItemDemand) {
-            let err = Error("Cannot remove more input URPS than the item already has, so must be less than or equal to " + existingItemDemand + "\n");
+            let err = Error("Cannot remove more user demand than the item already has, so must be less than or equal to " + existingItemDemand + "\n");
             throw err.stack;
         }
     }
-    // attempting to remove URPS from input item that doesn't yet exist in output (its not already required)
     else {
-    let err = Error("Cannot remove URPS from input item that doesn't already exist\n");
+    let err = Error("Cannot remove user demand from item that doesn't exist in the production chain\n");
     throw err.stack;
     }
 }

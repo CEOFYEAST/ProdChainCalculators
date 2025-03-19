@@ -24,7 +24,7 @@ function addIRPTU(itemID, amount, prodChainObject, timeUnit) {
         Validators.validateTimeUnit(timeUnit)
         amount = amount * getTimeUnitConversionRatio(timeUnit, prodChainObject["timeUnit"])
     }
-    Validators.validateURPSAddition(amount)
+    Validators.validateIRPTUAddition(amount)
 
     let prodChainData = prodChainObject["prodChain"]
     let demandInfoOutput = {}
@@ -54,7 +54,7 @@ function subtractIRPTU(itemID, amount, prodChainObject, timeUnit) {
         Validators.validateTimeUnit(timeUnit)
         amount = amount * getTimeUnitConversionRatio(timeUnit, prodChainObject["timeUnit"])
     }
-    Validators.validateURPSSubtraction(itemID, amount, prodChainData)
+    Validators.validateIRPTUSubtraction(itemID, amount, prodChainData)
 
     amount = amount * -1;
     let demandInfoOutput = {}
