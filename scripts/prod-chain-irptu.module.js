@@ -18,22 +18,24 @@ import {deepCopy} from "./helpers.module.js"
  * @returns THe updated production chain
  */
 function addIRPTU(itemID, amount, prodChainObject, timeUnit) {
-    let inputCopy = deepCopy(prodChainObject);
-
     Validators.validateID(itemID)
     Validators.validateNumber(amount)
-    Validators.validateProdChainObject(inputCopy)
+    Validators.validateProdChainObject(prodChainObject)
+    if (arguments.length === 4) {
+        Validators.validateTimeUnit(timeUnit)
+        amount = amount * getTimeUnitConversionRatio(timeUnit, prodChainObject["timeUnit"])
+    }
     Validators.validateURPSAddition(amount)
 
-    let prodChainData = inputCopy["prodChain"]
+    let prodChainData = prodChainObject["prodChain"]
     let demandInfoOutput = {}
     Calculators.calculateIntermediaryDemand(itemID, amount, demandInfoOutput)
     Calculators.updateProdChainIntermediaryDemand(prodChainData, demandInfoOutput)
     Calculators.updateProdChainUserDemand(itemID, amount, prodChainData)
     Calculators.clearEmptyData(prodChainData)
 
-    inputCopy["prodChain"] = prodChainData
-    return inputCopy;
+    prodChainObject["prodChain"] = prodChainData
+    return prodChainObject;
 }
 
 /**
@@ -45,12 +47,14 @@ function addIRPTU(itemID, amount, prodChainObject, timeUnit) {
  * @returns The updated production chain
  */
 function subtractIRPTU(itemID, amount, prodChainObject, timeUnit) {
-    let inputCopy = deepCopy(prodChainObject);
-
     Validators.validateID(itemID)
     Validators.validateNumber(amount)
-    Validators.validateProdChainObject(inputCopy)
-    let prodChainData = inputCopy["prodChain"]
+    Validators.validateProdChainObject(prodChainObject)
+    let prodChainData = prodChainObject["prodChain"]
+    if (arguments.length === 4) {
+        Validators.validateTimeUnit(timeUnit)
+        amount = amount * getTimeUnitConversionRatio(timeUnit, prodChainObject["timeUnit"])
+    }
     Validators.validateURPSSubtraction(itemID, amount, prodChainData)
 
     amount = amount * -1;
@@ -60,8 +64,8 @@ function subtractIRPTU(itemID, amount, prodChainObject, timeUnit) {
     Calculators.updateProdChainUserDemand(itemID, amount, prodChainData)
     Calculators.clearEmptyData(prodChainData)
 
-    inputCopy["prodChain"] = prodChainData
-    return inputCopy;
+    prodChainObject["prodChain"] = prodChainData
+    return prodChainObject;
 }
 
 export {
