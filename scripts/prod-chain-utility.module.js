@@ -6,6 +6,7 @@
 
 import { getTimeUnitConversionRatio } from "./helpers.module.js"
 import * as validators from "./validators.module.js"
+import recipes from './recipes.module.js'
 
 function getUserDemand(prodChainData) {
     validators.validateProdChainData(prodChainData)
@@ -16,6 +17,10 @@ function getUserDemand(prodChainData) {
         if(itemUserDemand > 0) userDemandData[itemID] = itemUserDemand
     }
     return userDemandData
+}
+
+function getValidIDs(){
+    return Object.keys(recipes)
 }
 
 function recalculateTimeUnit(prodChainObject, newTimeUnit) {
@@ -57,5 +62,5 @@ function createProductionChain(){
 }
 
 export {
-    getUserDemand, recalculateTimeUnit, createProductionChain
+    getUserDemand, getValidIDs, recalculateTimeUnit, createProductionChain
 }

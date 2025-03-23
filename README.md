@@ -8,7 +8,7 @@ Functionality of the package is exported through two main modules, irptu (at pro
 
 ## Installation
 
-
+npm i @ceofyeast/prodchaincalculators
 
 ## Keep Up With Updates
 

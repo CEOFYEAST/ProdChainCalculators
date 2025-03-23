@@ -4,7 +4,7 @@
  * @author ceofyeast
  */
 
-import {recipes,validIDs} from "./recipes.module.js"
+import recipes from "./recipes.module.js"
 
 function calculateIntermediaryDemand(reqItem_ID, reqItem_IRPTU, demandOutput){
     let reqItem_Info = recipes[reqItem_ID]; // general info about item
