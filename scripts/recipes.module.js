@@ -5,10 +5,11 @@
  */
 import config from './config.module.js'
 
-let recipes = null
+var recipes = null
 tryFetch()
 
-export default recipes;
+// makes recipes a live binding
+export {recipes as default}
 
 export async function tryFetch() {
     console.log("Fetching Recipes...")
@@ -18,9 +19,11 @@ export async function tryFetch() {
             method: "POST",
         });
         recipes = await response.json();
+
+        console.log("Recipes: " + recipes)
     } catch (err) {
+        console.log(err)
         console.log("Fetch failed @ base URL: " + config.baseURL)
-        recipes = null;
     }
 }
 
