@@ -6,9 +6,12 @@
 import {baseURL, recipesRoute} from './config.module.js'
 
 let recipes = null
+recipes = await tryFetch();
 
-async function tryFetch() {
-    console.log("Fetching...")
+export default recipes;
+
+export async function tryFetch() {
+    console.log("Fetching Recipes...")
     try {
         console.log("Base URL:" + baseURL)
         const response = await fetch(baseURL + recipesRoute, {
@@ -21,6 +24,3 @@ async function tryFetch() {
     }
 }
 
-recipes = await tryFetch();
-
-export default recipes;

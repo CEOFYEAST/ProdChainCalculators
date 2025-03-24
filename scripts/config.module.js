@@ -1,18 +1,14 @@
-let baseURL = "http://localhost:3000"
-
-let recipesRoute = "/recipes"
-
-let axiosInstance = null
-
-function setConfig(newConfig){
-    if(newConfig.baseURL != undefined) baseURL = newConfig.baseURL
-    if(newConfig.recipesRoute != undefined) recipesRoute = newConfig.recipesRoute
-    if(newConfig.axiosInstance != undefined) axiosInstance = newConfig.axiosInstance
+let config = {
+    baseURL: "http://localhost:3000",
+    recipesRoute: "/recipes",
+    axiosInstance: null,
 }
+
+export default new Proxy(config, {
+
+})
 
 export {
     baseURL, recipesRoute, axiosInstance
 }
-
-export default setConfig
 
