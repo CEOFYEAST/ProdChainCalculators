@@ -3,24 +3,24 @@
  * @description Exposes the "recipes" (data on how to create each item) in recipes.json, and provides method/s for filtering said data
  * @author ceofyeast
  */
-import {baseURL, recipesRoute} from './config.module.js'
+import config from './config.module.js'
 
 let recipes = null
-recipes = await tryFetch();
+tryFetch()
 
 export default recipes;
 
 export async function tryFetch() {
     console.log("Fetching Recipes...")
     try {
-        console.log("Base URL:" + baseURL)
-        const response = await fetch(baseURL + recipesRoute, {
+        console.log("Base URL:" + config.baseURL)
+        const response = await fetch(config.baseURL + config.recipesRoute, {
             method: "POST",
         });
-        const data = await response.json();
-        return data;
+        recipes = await response.json();
     } catch (err) {
-        return null;
+        console.log("Fetch failed @ base URL: " + config.baseURL)
+        recipes = null;
     }
 }
 
