@@ -35,8 +35,8 @@ function recalculateTimeUnit(prodChainObject, newTimeUnit) {
         prodChainData[itemID]["userIRPTU"] *= ratio
         prodChainData[itemID]["intermIRPTU"] *= ratio
 
-        for(let intermedItemID in prodChainData[itemID]["dependencyItems"]){
-            prodChainData[itemID]["dependencyItems"][intermedItemID] *= ratio
+        for(let intermedItemID in prodChainData[itemID]["dependentItems"]){
+            prodChainData[itemID]["dependentItems"][intermedItemID] *= ratio
         }
     }
 

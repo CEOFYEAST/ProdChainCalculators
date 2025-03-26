@@ -7,9 +7,6 @@
 import recipes from "./recipes.module.js"
 
 function calculateIntermediaryDemand(reqItem_ID, reqItem_IRPTU, demandOutput){
-    // REMOVE
-    console.log("Recipes (from module): " + recipes)
-
     let reqItem_Info = recipes[reqItem_ID]; // general info about item
     let reqItem_Type = reqItem_Info["Type"]; // type of item i.e. Machinery, Intermediate product
 
@@ -34,7 +31,7 @@ function calculateIntermediaryDemand(reqItem_ID, reqItem_IRPTU, demandOutput){
         demandOutput[intermediary_ID]["IRPTU"] += intermediary_IRPTU;
 
         tryAddIntermediaryItem(reqItem_ID, intermediary_ID, demandOutput)
-        demandOutput[intermediary_ID]["dependencyItems"][reqItem_ID] += intermediary_IRPTU;
+        demandOutput[intermediary_ID]["dependentItems"][reqItem_ID] += intermediary_IRPTU;
 
         calculateIntermediaryDemand(intermediary_ID, intermediary_IRPTU, demandOutput);
     }
@@ -54,12 +51,12 @@ function updateProdChainIntermediaryDemand(prodChainData, demandOutput){
         let requiredItemData = prodChainData[requiredItemID]
         requiredItemData["intermIRPTU"] += requiredItemDemand["IRPTU"]
 
-        for(let intermediaryItemID in requiredItemDemand["dependencyItems"]){
-            if (!requiredItemData["dependencyItems"].hasOwnProperty(intermediaryItemID)) {
-                requiredItemData["dependencyItems"][intermediaryItemID] = 0;
+        for(let intermediaryItemID in requiredItemDemand["dependentItems"]){
+            if (!requiredItemData["dependentItems"].hasOwnProperty(intermediaryItemID)) {
+                requiredItemData["dependentItems"][intermediaryItemID] = 0;
             }
-            requiredItemData["dependencyItems"][intermediaryItemID] += 
-            requiredItemDemand["dependencyItems"][intermediaryItemID];
+            requiredItemData["dependentItems"][intermediaryItemID] += 
+            requiredItemDemand["dependentItems"][intermediaryItemID];
         }
 
         prodChainData[requiredItemID] = requiredItemData
@@ -87,7 +84,7 @@ function tryAddItemData(itemID, prodChainData) {
         let itemData = {
             userIRPTU: 0,
             intermIRPTU: 0,
-            dependencyItems: {}
+            dependentItems: {}
         };
         prodChainData[itemID] = itemData;
     }
@@ -98,7 +95,7 @@ function tryAddRequiredItem(itemID, demandOutput)
   if(!(demandOutput.hasOwnProperty(itemID))){
     let itemData = {
       IRPTU: 0,
-      dependencyItems: {}
+      dependentItems: {}
     };
     demandOutput[itemID] = itemData;
   }
@@ -106,8 +103,8 @@ function tryAddRequiredItem(itemID, demandOutput)
 
 function tryAddIntermediaryItem(requiredItemID, intermediaryItemID, demandOutput) 
 {
-    if(!(demandOutput[intermediaryItemID]["dependencyItems"].hasOwnProperty(requiredItemID))){
-        demandOutput[intermediaryItemID]["dependencyItems"][requiredItemID] = 0;
+    if(!(demandOutput[intermediaryItemID]["dependentItems"].hasOwnProperty(requiredItemID))){
+        demandOutput[intermediaryItemID]["dependentItems"][requiredItemID] = 0;
     }
 }
 
