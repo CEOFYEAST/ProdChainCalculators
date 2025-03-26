@@ -55,11 +55,16 @@ function updateProdChainIntermediaryDemand(prodChainData, demandOutput){
             if (!requiredItemData["dependentItems"].hasOwnProperty(intermediaryItemID)) {
                 requiredItemData["dependentItems"][intermediaryItemID] = 0;
             }
+
             requiredItemData["dependentItems"][intermediaryItemID] += 
             requiredItemDemand["dependentItems"][intermediaryItemID];
+
+            if (requiredItemData["dependentItems"][intermediaryItemID] == 0) {
+                delete requiredItemData["dependentItems"][intermediaryItemID];
+            }
         }
 
-        prodChainData[requiredItemID] = requiredItemData
+        prodChainData[requiredItemID] = requiredItemData;
     }
 }
 

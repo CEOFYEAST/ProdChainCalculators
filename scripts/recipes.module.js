@@ -10,7 +10,7 @@ import { addConfigChangedListener } from './config.module.js'
 addConfigChangedListener(tryFetch)
 
 var recipes = null
-tryFetch()
+await tryFetch()
 
 async function tryFetch() {
     console.log("Fetching Recipes...")
@@ -21,7 +21,7 @@ async function tryFetch() {
         });
         recipes = await response.json();
 
-        console.log("Recipes: " + recipes)
+        console.log("Recipes fetch succeeded")
     } catch (err) {
         console.log(err)
         console.log("Fetch failed @ base URL: " + config.baseURL)

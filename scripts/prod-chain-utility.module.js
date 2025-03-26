@@ -28,7 +28,7 @@ function getItemIDs(){
 }
 
 /**
- * Used to fetch an object with item name keys, and item ID values; associates item names with their respective IDs
+ * Used to fetch an object with item name keys, and item ID values; associates item names with their respective IDs, which allows items to be selected by their name
  * @returns 
  */
 function getItemNamesAndIDs(){
@@ -41,6 +41,7 @@ function getItemNamesAndIDs(){
     }
     return namesAndIDs
 }
+
 
 function recalculateTimeUnit(prodChainObject, newTimeUnit) {
     validators.validateProdChainObject(prodChainObject)
