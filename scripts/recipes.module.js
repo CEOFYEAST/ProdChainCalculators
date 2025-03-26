@@ -6,7 +6,6 @@
 import config from './config.module.js'
 import { addConfigChangedListener } from './config.module.js'
 
-//let reloadRecipes = tryFetch
 addConfigChangedListener(tryFetch)
 
 var recipes = null
@@ -23,8 +22,7 @@ async function tryFetch() {
 
         console.log("Recipes fetch succeeded")
     } catch (err) {
-        console.log(err)
-        console.log("Fetch failed @ base URL: " + config.baseURL)
+        console.log("Recipes fetch failed @ base URL: " + config.baseURL)
     }
 }
 

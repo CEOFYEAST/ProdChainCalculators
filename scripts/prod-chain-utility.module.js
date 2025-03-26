@@ -8,6 +8,11 @@ import { getTimeUnitConversionRatio } from "./helpers.module.js"
 import * as validators from "./validators.module.js"
 import recipes from './recipes.module.js'
 
+/**
+ * Used to parse and return the user demand of a prod chain data object
+ * @param {*} prodChainData 
+ * @returns An object containing the IDs of the items required for user demand as keys, and their actual demand IRPTU as values
+ */
 function getUserDemand(prodChainData) {
     validators.validateProdChainData(prodChainData)
 
@@ -42,7 +47,12 @@ function getItemNamesAndIDs(){
     return namesAndIDs
 }
 
-
+/**
+ * Swtiches the time unit of the supplied prod chain object, and re-calculates the IRPTU of every item in the object's prod chain data 
+ * @param {*} prodChainObject 
+ * @param {*} newTimeUnit 
+ * @returns The recalculated prod chain object
+ */
 function recalculateTimeUnit(prodChainObject, newTimeUnit) {
     validators.validateProdChainObject(prodChainObject)
     validators.validateTimeUnit(newTimeUnit)
@@ -65,7 +75,12 @@ function recalculateTimeUnit(prodChainObject, newTimeUnit) {
     return prodChainObject
 }
 
-function createProductionChain(){
+/**
+ * Used to create a valid, empty production chain object
+ * @param (optional) Time unit input; allows the time unit of the prod chain object to be specified
+ * @returns An empty object representation of a production chain
+ */
+function createProductionChainObject(){
     if (arguments.length === 1 && typeof arguments[0] === 'string') {
         validators.validateTimeUnit(arguments[0])
         
@@ -82,5 +97,5 @@ function createProductionChain(){
 }
 
 export {
-    getUserDemand, getItemIDs, recalculateTimeUnit, createProductionChain
+    getUserDemand, getItemIDs, getItemNamesAndIDs, recalculateTimeUnit, createProductionChainObject
 }

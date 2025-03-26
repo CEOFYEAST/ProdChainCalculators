@@ -10,7 +10,6 @@ let config = {
 export default new Proxy(config, {
     set(obj, prop, value) {
         if (obj.hasOwnProperty(prop)){
-            console.log("Config has value: " + prop)
             obj[prop] = value
             for(let i = 0; i < configChangedListeners.length; i++){
                 console.log("(2) Config changed listener type " + typeof(configChangedListeners[i]))
