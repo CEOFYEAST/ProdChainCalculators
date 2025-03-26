@@ -5,7 +5,7 @@
  */
 
 import recipes from "./recipes.module.js"
-import { getValidIDs } from "./prod-chain-utility.module.js";
+import { getItemIDs } from "./prod-chain-utility.module.js";
 import {validTimeUnits} from "./helpers.module.js"
  
 export function ensureNonNullish(val)
@@ -36,7 +36,7 @@ export function validateID(id) {
         let err = Error("id cannot be empty\n");
         throw err.stack;
     }
-    if (!getValidIDs().includes(id)) {
+    if (!getItemIDs().includes(id)) {
         let err = Error("Recipe with id '" + id + "' not found in recipesDict\n");
         throw err.stack;
     }
@@ -62,7 +62,7 @@ export function validateProdChainData(prodChainData) {
     ensureNonNullish(prodChainData);
     validateObject(prodChainData);
     for (let key in prodChainData) {
-        if (!getValidIDs().includes(key)) {
+        if (!getItemIDs().includes(key)) {
             let err = Error("Invalid key '" + key + "' in production chain data\n");
             throw err.stack;
         }

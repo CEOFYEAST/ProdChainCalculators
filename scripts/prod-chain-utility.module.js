@@ -19,8 +19,27 @@ function getUserDemand(prodChainData) {
     return userDemandData
 }
 
-function getValidIDs(){
+/**
+ * Used to the IDs of the items in recipes
+ * @returns a list of string IDs
+ */
+function getItemIDs(){
     return Object.keys(recipes)
+}
+
+/**
+ * Used to fetch an object with item name keys, and item ID values; associates item names with their respective IDs
+ * @returns 
+ */
+function getItemNamesAndIDs(){
+    let IDs = getItemIDs()
+    let namesAndIDs = {}
+    for(let i = 0; i < IDs.length; i++){
+        let ID = IDs[i]
+        let name = recipes[ID]["name"]
+        namesAndIDs[name] = ID
+    }
+    return namesAndIDs
 }
 
 function recalculateTimeUnit(prodChainObject, newTimeUnit) {
@@ -62,5 +81,5 @@ function createProductionChain(){
 }
 
 export {
-    getUserDemand, getValidIDs, recalculateTimeUnit, createProductionChain
+    getUserDemand, getItemIDs, recalculateTimeUnit, createProductionChain
 }
