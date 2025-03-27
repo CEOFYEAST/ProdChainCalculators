@@ -11,13 +11,15 @@ export default new Proxy(config, {
     set(obj, prop, value) {
         if (obj.hasOwnProperty(prop)){
             obj[prop] = value
+
+            // calls all config changed listeners
             for(let i = 0; i < configChangedListeners.length; i++){
-                console.log("(2) Config changed listener type " + typeof(configChangedListeners[i]))
                 configChangedListeners[i]();
             }
+
             return true
         }
-        console.log("Config does not have value: " + prop)
+
         return false
     },
     get(obj, prop, receiver){
@@ -26,7 +28,6 @@ export default new Proxy(config, {
 })
 
 export function addConfigChangedListener(listener){
-    console.log("(1) Config changed listener type " + typeof(listener))
     configChangedListeners.push(listener)
 }
 

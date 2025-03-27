@@ -1,6 +1,6 @@
 /**
  * @module validators
- * @description This module provides functions for validating various types of values, such as IDs, recipes, output, booleans, and numbers.
+ * @description This module provides functions for validating various types of values, such as IDs, recipes, prod chain data/objects, booleans, and numbers.
  * @author ceofyeast
  */
 
