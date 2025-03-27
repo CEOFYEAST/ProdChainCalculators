@@ -1,2 +1,16 @@
 TO-DO
 Add entries for prod chain object, prod chain data, time unit, IRPTU
+
+## Production Chain
+A series of one or more outputs and inputs; always ends in a user-required output
+
+## Production Chain Data
+The data representation of a production chain; contains user demand data and intermediary demand data for every item in the production chain
+
+## Production Chain Object
+Contains a production chain data object, as well as the time unit of the production chain
+
+## Items Required Per Time Unit (IRPTU) 
+The unit that represents the number of items required per unit of time; the specific item, as well as the type of time unit being used (minutes, seconds, etc.), are both implied by the context of the system and the usage of the unit type
+
+
