@@ -42,8 +42,6 @@ function calculateIntermediaryDemand(reqItem_ID, reqItem_IRPTU, demandOutput){
  * Demand being added can be positive or negative
  */
 function updateProdChainIntermediaryDemand(prodChainData, demandOutput){
-    // for each item in demand output
-        // if 
     for (let requiredItemID in demandOutput) {
         tryAddItemData(requiredItemID, prodChainData)
 

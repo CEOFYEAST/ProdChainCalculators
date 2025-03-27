@@ -6,23 +6,39 @@
 import config from './config.module.js'
 import { addConfigChangedListener } from './config.module.js'
 
-addConfigChangedListener(tryFetch)
+addConfigChangedListener(loadRecipes)
 
 var recipes = null
-await tryFetch()
+if(config.devMode) await loadRecipes();
 
-async function tryFetch() {
-    console.log("Fetching Recipes...")
+async function loadRecipes(){
+    console.log("Loading Recipes...")
+    if(config.axiosInstance == null || config.axiosInstance == undefined) await tryGenericFetchRecipes();
+    else await tryAxiosFetchRecipes();
+}
+
+async function tryAxiosFetchRecipes(){
+    console.log("Fetching Recipes Using Axios Fetch...")
+    config.axiosInstance.post(config.recipesRoute)
+    .then((response) => {
+        console.log("Axios Recipes fetch succeeded");
+        recipes = response.data;
+    })
+    .catch((err) => {
+        console.log("Axios Recipes fetch failed @ axios instance: " + config.axiosInstance);
+    })
+}
+
+async function tryGenericFetchRecipes() {
+    console.log("Fetching Recipes Using Generic Fetch...")
     try {
-        console.log("Base URL:" + config.baseURL)
         const response = await fetch(config.baseURL + config.recipesRoute, {
             method: "POST",
         });
         recipes = await response.json();
-
-        console.log("Recipes fetch succeeded")
+        console.log("Generic Recipes fetch succeeded")
     } catch (err) {
-        console.log("Recipes fetch failed @ base URL: " + config.baseURL)
+        console.log("Generic Recipes fetch failed @ base URL: " + config.baseURL)
     }
 }
 

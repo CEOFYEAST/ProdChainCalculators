@@ -11,9 +11,10 @@ The irptu module exposes methods to add and subtract user demand for individual 
 The utility module exposes methods to create, parse, and recalculate the time unit of a production chain. 
 
 The config module exposes an object whose properties determine the behavior of the package; these properties can be changed by the program during runtime, or the defaults can be set within the module itself. Once the properties are changed, all the resources that depend on the properties are automatically reloaded. The properties are as follows:
-- baseURL: stores the base URL used to make http fetch requests from the package (default is http://localhost:3000)
-- recipesRoute: stores the route used to fetch the recipes object from the server (default is /recipes)
-- axiosInstance: stores an Axios instance, which can act as an alternative to the default behavior of making fetch requests from the package; this is helpful if a developer has a pre-configured Axios instance they wish to use
+- baseURL: stores the base URL used to make http fetch requests from the package (default is "http://localhost:3000")
+- recipesRoute: stores the route used to fetch the recipes object from the server (default is "/recipes")
+- axiosInstance: stores an Axios instance, which can act as an alternative to the default behavior of making fetch requests from the package; this is helpful if a developer has a pre-configured Axios instance they wish to use (default is null)
+- devMode: stores a bool indicating whether the package is in testing mode; when set to true, the system will make minor changes to adjust to the new environment (default is false)
 
 ## Installation
 

@@ -1,10 +1,10 @@
-// // Revisit and test
 let configChangedListeners = new Array()
 
 let config = {
     baseURL: "http://localhost:3000",
     recipesRoute: "/recipes",
     axiosInstance: null,
+    devMode: false
 }
 
 export default new Proxy(config, {
