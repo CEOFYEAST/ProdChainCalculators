@@ -56,6 +56,7 @@ export function validateProdChainObject(prodChainObject) {
     }
 
     validateTimeUnit(prodChainObject["timeUnit"])
+    validateProdChainData(prodChainObject['prodChain'])
 }
 
 export function validateProdChainData(prodChainData) {

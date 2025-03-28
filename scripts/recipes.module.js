@@ -9,7 +9,10 @@ import { addConfigChangedListener } from './config.module.js'
 addConfigChangedListener(loadRecipes)
 
 var recipes = null
-if(config.devMode) await loadRecipes();
+if(config.initialRecipesLoad) {
+    console.log("Performing initial recipes load")
+    await loadRecipes();
+}
 
 async function loadRecipes(){
     console.log("Loading Recipes...")
@@ -18,7 +21,7 @@ async function loadRecipes(){
 }
 
 async function tryAxiosFetchRecipes(){
-    console.log("Fetching Recipes Using Axios Fetch...")
+    console.log("Fetching Recipes Using Axios Fetch @ Base URL: " + config.baseURL)
     config.axiosInstance.post(config.recipesRoute)
     .then((response) => {
         console.log("Axios Recipes fetch succeeded");
@@ -30,7 +33,7 @@ async function tryAxiosFetchRecipes(){
 }
 
 async function tryGenericFetchRecipes() {
-    console.log("Fetching Recipes Using Generic Fetch...")
+    console.log("Fetching Recipes Using Generic Fetch @ Base URL: " + config.baseURL)
     try {
         const response = await fetch(config.baseURL + config.recipesRoute, {
             method: "POST",

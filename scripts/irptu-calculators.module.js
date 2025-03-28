@@ -25,7 +25,12 @@ function calculateIntermediaryDemand(reqItem_ID, reqItem_IRPTU, demandOutput){
         let intermediary_Object = reqItem_Intermediaries[key];
         let intermediary_ID = intermediary_Object["id"];
         let intermediary_IRPC = intermediary_Object["amount"]; // intermediary items required per reqItem craft
-        let intermediary_IRPTU = intermediary_IRPC * reqItem_CRPTU; // intermediary items required per time unit
+        let intermediary_IRPTU = 0 // intermediary items required per time unit
+
+        // handles rare case where recipe yield is null; doesn't actually solve the problem, but it ensures that no bugs occur
+        if(reqItem_IPPC != null){
+            intermediary_IRPTU = intermediary_IRPC * reqItem_CRPTU;
+        }
 
         tryAddRequiredItem(intermediary_ID, demandOutput);
         demandOutput[intermediary_ID]["IRPTU"] += intermediary_IRPTU;
