@@ -6,43 +6,61 @@
 import config from './config.module.js'
 import { addConfigChangedListener } from './config.module.js'
 
+if(config.debugMode) console.log("Recipes Module Running")
+
+let recipesLoadedListeners = new Array()
+
 addConfigChangedListener(loadRecipes)
 
 var recipes = null
 if(config.initialRecipesLoad) {
-    console.log("Performing initial recipes load")
+    if(config.debugMode) console.log("Performing initial recipes load")
     await loadRecipes();
 }
 
 async function loadRecipes(){
-    console.log("Loading Recipes...")
+    if(config.debugMode) console.log("Loading Recipes...")
     if(config.axiosInstance == null || config.axiosInstance == undefined) await tryGenericFetchRecipes();
     else await tryAxiosFetchRecipes();
 }
 
 async function tryAxiosFetchRecipes(){
-    console.log("Fetching Recipes Using Axios Fetch @ Base URL: " + config.baseURL)
+    if(config.debugMode) console.log("Fetching Recipes Using Axios Fetch @ Base URL: " + config.baseURL)
     config.axiosInstance.post(config.recipesRoute)
     .then((response) => {
-        console.log("Axios Recipes fetch succeeded");
         recipes = response.data;
+        if(config.debugMode) console.log("Axios Recipes fetch succeeded");
+        handleRecipesLoaded()
     })
     .catch((err) => {
-        console.log("Axios Recipes fetch failed @ axios instance: " + config.axiosInstance);
+        if(config.debugMode) console.log("Axios Recipes fetch failed @ axios instance: " + config.axiosInstance);
     })
 }
 
 async function tryGenericFetchRecipes() {
-    console.log("Fetching Recipes Using Generic Fetch @ Base URL: " + config.baseURL)
+    if(config.debugMode) console.log("Fetching Recipes Using Generic Fetch @ Base URL: " + config.baseURL)
     try {
         const response = await fetch(config.baseURL + config.recipesRoute, {
             method: "POST",
         });
         recipes = await response.json();
-        console.log("Generic Recipes fetch succeeded")
+        if(config.debugMode) console.log("Generic Recipes fetch succeeded")
+        handleRecipesLoaded()
     } catch (err) {
-        console.log("Generic Recipes fetch failed @ base URL: " + config.baseURL)
+        if(config.debugMode) console.log("Generic Recipes fetch failed @ base URL: " + config.baseURL)
     }
+}
+
+function handleRecipesLoaded(){
+    // calls all recipes loaded listeners
+    if(config.debugMode) console.log("Calling all recipesLoaded event listeners...")
+    for(let i = 0; i < recipesLoadedListeners.length; i++){
+        recipesLoadedListeners[i]();
+    }
+}
+
+export function addRecipesLoadedListener(listener){
+    recipesLoadedListeners.push(listener)
 }
 
 // makes recipes a live binding

@@ -1,6 +1,6 @@
 {
   "name": "@ceofyeast/prodchaincalculators",
-  "version": "1.2.0",
+  "version": "1.4.3",
   "description": "Contains modules used to generate, modify, and parse production chains",
   "type": "module",
   "author": "ceofyeast",
