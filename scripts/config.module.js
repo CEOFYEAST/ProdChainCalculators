@@ -18,7 +18,12 @@ function handleConfigChanged(){
     }
 }
 
+/**
+ * Exporting a proxy of the config object ensures the listeners of the config changed event can be called
+ */
 export default new Proxy(config, {
+
+    // ensures no new properties can be added, and calls all config changed listeners
     set(obj, prop, value) {
         if (obj.hasOwnProperty(prop)){
             obj[prop] = value
@@ -28,6 +33,7 @@ export default new Proxy(config, {
 
         return false
     },
+
     get(obj, prop, receiver){
         return obj[prop]
     }

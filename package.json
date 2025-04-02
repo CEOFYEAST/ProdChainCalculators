@@ -1,6 +1,6 @@
 {
   "name": "@ceofyeast/prodchaincalculators",
-  "version": "1.4.4",
+  "version": "1.5.5",
   "description": "Contains modules used to generate, modify, and parse production chains",
   "type": "module",
   "author": "ceofyeast",
@@ -10,6 +10,7 @@
     "./utility": "./scripts/prod-chain-utility.module.js",
     "./config": "./scripts/config.module.js",
     "./recipes": "./scripts/recipes.module.js",
-    "./calculators": "./scripts/irptu-calculators.module.js"
+    "./calculators": "./scripts/irptu-calculators.module.js",
+    "./validators": "./scripts/validators.module.js"
   }
 }

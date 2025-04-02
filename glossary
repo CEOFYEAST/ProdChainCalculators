@@ -13,4 +13,11 @@ The time period that item demand is framed in; for example, if a production chai
 ## Items Required Per Time Unit (IRPTU) 
 The unit that represents the number of a specific item demanded by a production chain per unit of time
 
+## Recipes Object
+Central to the package, the recipes object contains data pertaining to the construction of every item in the game. Each item in the game has its own entry, and each entry contains data on how to make that item. The "ingredients", or constituent items required to make each item, are included, as well as their ratios. Other data, such as the item yield per craft of each recipe, is also listed.
+
+The recipes object also happens to be the only data source used by the package that stores any info about the items being used; therefore, the IDs and names of valid items to be added or removed from the production chain are pulled directly from this object.
+
+The package doesn't explicitly support usage of other recipe objects, but it doesn't prevent it either. The server can just serve different recipe objects, as long as they're in the proper format.
+
 

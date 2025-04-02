@@ -7,18 +7,32 @@
 import recipes from "./recipes.module.js"
 import { getItemIDs } from "./prod-chain-utility.module.js";
 import {validTimeUnits} from "./helpers.module.js"
- 
+import config from "./config.module.js"
+
+let validationFailedListeners = new Array()
+
+function handleValidationFailed(err){
+    if(config.debugMode) console.log(err.message)
+    for(let i = 0; i < validationFailedListeners.length; i++){
+        validationFailedListeners[i](err);
+    }
+}
+
+export function addValidationFailedListener(listener){
+    validationFailedListeners.push(listener)
+}
+
 export function ensureNonNullish(val)
 {
     if(val === undefined)
     {
         let err = Error("Value is undefined\n");
-        throw err.stack;
+        handleValidationFailed(err)
     }
     else if(val === null)
     {
         let err = Error("Value is null\n");
-        throw err.stack;
+        handleValidationFailed(err)
     }
 }
 
@@ -27,18 +41,18 @@ export function validateID(id) {
 
     if (!(typeof id === 'string')) {
         let err = Error("ID must be of type string, is of type " + typeof id + "\n");
-        throw err.stack;
+        handleValidationFailed(err)
     }
 
     validateRecipes(recipes);
 
     if (id == "") {
         let err = Error("id cannot be empty\n");
-        throw err.stack;
+        handleValidationFailed(err)
     }
     if (!getItemIDs().includes(id)) {
         let err = Error("Recipe with id '" + id + "' not found in recipesDict\n");
-        throw err.stack;
+        handleValidationFailed(err)
     }
 }
 
@@ -52,7 +66,7 @@ export function validateProdChainObject(prodChainObject) {
     validateObject(prodChainObject);
     if (!(prodChainObject.hasOwnProperty("prodChain")) || !(prodChainObject.hasOwnProperty("timeUnit"))) {
         let err = Error("Supplied production chain object is invalid");
-        throw err.stack;
+        handleValidationFailed(err)
     }
 
     validateTimeUnit(prodChainObject["timeUnit"])
@@ -65,7 +79,7 @@ export function validateProdChainData(prodChainData) {
     for (let key in prodChainData) {
         if (!getItemIDs().includes(key)) {
             let err = Error("Invalid key '" + key + "' in production chain data\n");
-            throw err.stack;
+            handleValidationFailed(err)
         }
     }
 }
@@ -75,7 +89,7 @@ export function validateObject(val){
 
     if(!(typeof val === 'object')){
         let err = Error(typeof val + " is not of type object\n");
-        throw err.stack;
+        handleValidationFailed(err)
     }
 }
 
@@ -84,7 +98,7 @@ export function validateNumber(val) {
 
     if(!(typeof val === 'number' && !isNaN(val))) {
         let err = Error(typeof val + " is not a number\n");
-        throw err.stack;
+        handleValidationFailed(err)
     }
 }
 
@@ -93,19 +107,19 @@ export function validateTimeUnit(timeUnit){
 
     if (!(typeof timeUnit === 'string')) {
         let err = Error("Time unit must be of type string, is of type " + typeof timeUnit + "\n");
-        throw err.stack;
+        handleValidationFailed(err)
     }
 
     if (!validTimeUnits.includes(timeUnit)) {
         let err = Error("Time unit must be one of " + validTimeUnits.join(', ') + "\n");
-        throw err.stack;
+        handleValidationFailed(err)
     }
 }
 
 export function validateIRPTUAddition(amount){
     if(amount <= 0) {
         let err = Error("Invalid Addition Amount\n");
-        throw err.stack;
+        handleValidationFailed(err)
     }
 }
 
@@ -116,11 +130,11 @@ export function validateIRPTUSubtraction(itemID, amount, prodChainData){
 
         if (amount > existingItemDemand) {
             let err = Error("Cannot remove more user demand than the item already has, so must be less than or equal to " + existingItemDemand + "\n");
-            throw err.stack;
+            handleValidationFailed(err)
         }
     }
     else {
-    let err = Error("Cannot remove user demand from item that doesn't exist in the production chain\n");
-    throw err.stack;
+        let err = Error("Cannot remove user demand from item that doesn't exist in the production chain\n");
+        handleValidationFailed(err)
     }
 }

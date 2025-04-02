@@ -7,11 +7,8 @@ import config from './config.module.js'
 import { addConfigChangedListener } from './config.module.js'
 
 if(config.debugMode) console.log("Recipes Module Running")
-
 let recipesLoadedListeners = new Array()
-
 addConfigChangedListener(loadRecipes)
-
 var recipes = null
 if(config.initialRecipesLoad) {
     if(config.debugMode) console.log("Performing initial recipes load")
