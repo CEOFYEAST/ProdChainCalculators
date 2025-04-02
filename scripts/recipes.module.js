@@ -52,6 +52,8 @@ async function tryGenericFetchRecipes() {
 }
 
 function handleRecipesLoaded(){
+    recipesLoaded = true
+
     // calls all recipes loaded listeners
     if(config.debugMode) console.log("Calling all recipesLoaded event listeners...")
     for(let i = 0; i < recipesLoadedListeners.length; i++){
@@ -62,6 +64,8 @@ function handleRecipesLoaded(){
 export function addRecipesLoadedListener(listener){
     recipesLoadedListeners.push(listener)
 }
+
+export let recipesLoaded = false
 
 // makes recipes a live binding
 export {recipes as default}
