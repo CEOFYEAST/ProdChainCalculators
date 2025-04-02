@@ -16,6 +16,7 @@ function handleValidationFailed(err){
     for(let i = 0; i < validationFailedListeners.length; i++){
         validationFailedListeners[i](err);
     }
+    throw(err.stack)
 }
 
 export function addValidationFailedListener(listener){
