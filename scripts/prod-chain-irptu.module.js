@@ -17,21 +17,17 @@ import { getTimeUnitConversionRatio } from "./helpers.module.js"
  * @returns THe updated production chain
  */
 function addIRPTU(itemID, amount, prodChainObject, timeUnit) {
-    try {
-        Validators.validateID(itemID)
-        Validators.validateNumber(amount)
-        Validators.validateProdChainObject(prodChainObject)
-        if (arguments.length === 4) {
-            Validators.validateTimeUnit(timeUnit)
-            amount = amount * getTimeUnitConversionRatio(timeUnit, prodChainObject["timeUnit"])
-        }
-        Validators.validateIRPTUAddition(amount)
-        Validators.validateProdChainData(prodChainObject["prodChain"])
-    } catch(err){
-        return
+    Validators.validateID(itemID)
+    Validators.validateNumber(amount)
+    Validators.validateProdChainObject(prodChainObject)
+    if (arguments.length === 4) {
+        Validators.validateTimeUnit(timeUnit)
+        amount = amount * getTimeUnitConversionRatio(timeUnit, prodChainObject["timeUnit"])
     }
-    
+    Validators.validateIRPTUAddition(amount)
     let prodChainData = prodChainObject["prodChain"]
+    Validators.validateProdChainData(prodChainData)
+
     let demandInfoOutput = {}
     Calculators.calculateIntermediaryDemand(itemID, amount, demandInfoOutput)
     Calculators.updateProdChainIntermediaryDemand(prodChainData, demandInfoOutput)
@@ -51,22 +47,18 @@ function addIRPTU(itemID, amount, prodChainObject, timeUnit) {
  * @returns The updated production chain
  */
 function subtractIRPTU(itemID, amount, prodChainObject, timeUnit) {
-    try {
-        Validators.validateID(itemID)
-        Validators.validateNumber(amount)
-        Validators.validateProdChainObject(prodChainObject)
-        Validators.validateProdChainData(prodChainObject["prodChain"])
-        if (arguments.length === 4) {
-            Validators.validateTimeUnit(timeUnit)
-            amount = amount * getTimeUnitConversionRatio(timeUnit, prodChainObject["timeUnit"])
-        }
-        Validators.validateIRPTUSubtraction(itemID, amount, prodChainData)
-    } catch(err){
-        return
+    Validators.validateID(itemID)
+    Validators.validateNumber(amount)
+    Validators.validateProdChainObject(prodChainObject)
+    let prodChainData = prodChainObject["prodChain"]
+    Validators.validateProdChainData(prodChainData)
+    if (arguments.length === 4) {
+        Validators.validateTimeUnit(timeUnit)
+        amount = amount * getTimeUnitConversionRatio(timeUnit, prodChainObject["timeUnit"])
     }
+    Validators.validateIRPTUSubtraction(itemID, amount, prodChainData)
 
     amount = amount * -1;
-    let prodChainData = prodChainObject["prodChain"]
     let demandInfoOutput = {}
     Calculators.calculateIntermediaryDemand(itemID, amount, demandInfoOutput)
     Calculators.updateProdChainIntermediaryDemand(prodChainData, demandInfoOutput)

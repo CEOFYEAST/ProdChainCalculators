@@ -14,13 +14,8 @@ import recipes from './recipes.module.js'
  * @returns An object containing the IDs of the items required for user demand as keys, and their actual demand IRPTU as values
  */
 function getUserDemand(prodChainData) {
-    try {
-        validators.validateProdChainData(prodChainData)
-    } catch(err){
-        return
-    }
+    validators.validateProdChainData(prodChainData)
     
-
     let userDemandData = {}
     for(let itemID in prodChainData){
         let itemUserDemand = prodChainData[itemID]["userIRPTU"]
@@ -59,12 +54,8 @@ function getItemNamesAndIDs(){
  * @returns The recalculated prod chain object
  */
 function recalculateTimeUnit(prodChainObject, newTimeUnit) {
-    try {
-        validators.validateProdChainObject(prodChainObject)
-        validators.validateTimeUnit(newTimeUnit)
-    } catch(err){
-        return
-    }
+    validators.validateProdChainObject(prodChainObject)
+    validators.validateTimeUnit(newTimeUnit)
 
     let oldTimeUnit = prodChainObject["timeUnit"]
     let ratio = getTimeUnitConversionRatio(oldTimeUnit, newTimeUnit)
@@ -91,12 +82,7 @@ function recalculateTimeUnit(prodChainObject, newTimeUnit) {
  */
 function createProductionChainObject(){
     if (arguments.length === 1 && typeof arguments[0] === 'string') {
-        try {
-            validators.validateTimeUnit(arguments[0])
-        } catch(err) {
-            return;
-        }
-        
+        validators.validateTimeUnit(arguments[0])
         
         return {
             timeUnit: arguments[0],
