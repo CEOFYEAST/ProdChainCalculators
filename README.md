@@ -14,7 +14,7 @@ The **config module** exposes an object whose properties determine the behavior 
 
 The **recipes module** exposes a recipes object, which most of the other modules depend on; this object is automatically loaded via a fetch to the server, the details of which can be specified at runtime using the config (I'm working on adding a static file to support pre-compilation configuration). More importantly to the developer, the recipes module also has a recipesLoaded event, and a "recipesLoaded" bool variable.
 
-The **validators module** handles validation of various inputs and outputs used by the package; the module exposes a "validation failed" event, which is described under the Events header
+The **validators module** handles validation of various inputs and outputs used by the package; the module exposes a "validation failed" event, which is described under the Events header. Whenever a validation fails, the module throws a "ValidationFailed" error. In cases where most of the input to the package is supplied by a user, it becomes useful to catch this error; this can be done by catching all errors produced by calls to the package, and not re-throwing erros whose name is "ValidationFailed".
 
 ## Events
 
