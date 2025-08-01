@@ -7,6 +7,8 @@
 import recipes from "./recipes.module.js"
 
 function calculateIntermediaryDemand(reqItem_ID, reqItem_IRPTU, demandOutput){
+    tryAddRequiredItem(reqItem_ID, demandOutput)
+
     let reqItem_Info = recipes[reqItem_ID]; // general info about item
     let reqItem_Type = reqItem_Info["Type"]; // type of item i.e. Machinery, Intermediate product
 
@@ -33,10 +35,12 @@ function calculateIntermediaryDemand(reqItem_ID, reqItem_IRPTU, demandOutput){
         }
 
         tryAddRequiredItem(intermediary_ID, demandOutput);
-        demandOutput[intermediary_ID]["IRPTU"] += intermediary_IRPTU;
 
-        tryAddIntermediaryItem(reqItem_ID, intermediary_ID, demandOutput)
-        demandOutput[intermediary_ID]["dependentItems"][reqItem_ID] += intermediary_IRPTU;
+        addIntermediaryDemand(intermediary_ID, intermediary_IRPTU, demandOutput);
+
+        addDependentDemand(reqItem_ID, intermediary_ID, intermediary_IRPTU, demandOutput);
+
+        addIngredientDemand(reqItem_ID, intermediary_ID, intermediary_IRPTU, demandOutput);
 
         calculateIntermediaryDemand(intermediary_ID, intermediary_IRPTU, demandOutput);
     }
@@ -54,16 +58,31 @@ function updateProdChainIntermediaryDemand(prodChainData, demandOutput){
         let requiredItemData = prodChainData[requiredItemID]
         requiredItemData["intermIRPTU"] += requiredItemDemand["IRPTU"]
 
-        for(let intermediaryItemID in requiredItemDemand["dependentItems"]){
-            if (!requiredItemData["dependentItems"].hasOwnProperty(intermediaryItemID)) {
-                requiredItemData["dependentItems"][intermediaryItemID] = 0;
+        // update dependent items demand
+        for(let dependentItemID in requiredItemDemand["dependentItems"]){
+            if (!requiredItemData["dependentItems"].hasOwnProperty(dependentItemID)) {
+                requiredItemData["dependentItems"][dependentItemID] = 0;
             }
 
-            requiredItemData["dependentItems"][intermediaryItemID] += 
-            requiredItemDemand["dependentItems"][intermediaryItemID];
+            requiredItemData["dependentItems"][dependentItemID] += 
+            requiredItemDemand["dependentItems"][dependentItemID];
 
-            if (requiredItemData["dependentItems"][intermediaryItemID] == 0) {
-                delete requiredItemData["dependentItems"][intermediaryItemID];
+            if (requiredItemData["dependentItems"][dependentItemID] == 0) {
+                delete requiredItemData["dependentItems"][dependentItemID];
+            }
+        }
+
+        // update ingredient items demand
+        for(let ingredientItemID in requiredItemDemand["ingredientItems"]){
+            if (!requiredItemData["ingredientItems"].hasOwnProperty(ingredientItemID)) {
+                requiredItemData["ingredientItems"][ingredientItemID] = 0;
+            }
+
+            requiredItemData["ingredientItems"][ingredientItemID] += 
+            requiredItemDemand["ingredientItems"][ingredientItemID];
+
+            if (requiredItemData["ingredientItems"][ingredientItemID] == 0) {
+                delete requiredItemData["ingredientItems"][ingredientItemID];
             }
         }
 
@@ -92,7 +111,8 @@ function tryAddItemData(itemID, prodChainData) {
         let itemData = {
             userIRPTU: 0,
             intermIRPTU: 0,
-            dependentItems: {}
+            dependentItems: {},
+            ingredientItems: {}
         };
         prodChainData[itemID] = itemData;
     }
@@ -103,17 +123,32 @@ function tryAddRequiredItem(itemID, demandOutput)
   if(!(demandOutput.hasOwnProperty(itemID))){
     let itemData = {
       IRPTU: 0,
-      dependentItems: {}
+      dependentItems: {},
+      ingredientItems: {}
     };
     demandOutput[itemID] = itemData;
   }
 }
 
-function tryAddIntermediaryItem(requiredItemID, intermediaryItemID, demandOutput) 
+function addIntermediaryDemand(intermediaryItemID, intermediary_IRPTU, demandOutput)
+{
+    demandOutput[intermediaryItemID]["IRPTU"] += intermediary_IRPTU;
+}
+
+function addDependentDemand(requiredItemID, intermediaryItemID, intermediary_IRPTU, demandOutput) 
 {
     if(!(demandOutput[intermediaryItemID]["dependentItems"].hasOwnProperty(requiredItemID))){
         demandOutput[intermediaryItemID]["dependentItems"][requiredItemID] = 0;
     }
+    demandOutput[intermediaryItemID]["dependentItems"][requiredItemID] += intermediary_IRPTU;
+}
+
+function addIngredientDemand(requiredItemID, intermediaryItemID, ingredient_IRPTU, demandOutput)
+{
+    if(!(demandOutput[requiredItemID]["ingredientItems"].hasOwnProperty(intermediaryItemID))){
+        demandOutput[requiredItemID]["ingredientItems"][intermediaryItemID] = 0;
+    }
+    demandOutput[requiredItemID]["ingredientItems"][intermediaryItemID] += ingredient_IRPTU;
 }
 
 export {
