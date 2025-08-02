@@ -11,6 +11,7 @@
     "./config": "./scripts/config.module.js",
     "./recipes": "./scripts/recipes.module.js",
     "./calculators": "./scripts/irptu-calculators.module.js",
-    "./validators": "./scripts/validators.module.js"
+    "./validators": "./scripts/validators.module.js",
+    "./graph": "./scripts/graph-transformer.module.js"
   }
 }
