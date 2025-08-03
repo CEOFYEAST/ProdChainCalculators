@@ -76,7 +76,7 @@ function constructBatchOfEdges(ingredDemand, recipeID) {
                     demand: demand
                 },
                 style: {
-                    label: demand,
+                    labelText: String(demand)
                 }
             }
         })
