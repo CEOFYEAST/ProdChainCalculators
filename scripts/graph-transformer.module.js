@@ -39,6 +39,8 @@ function constructNodeData(pcDemand, timeUnit) {
                 id: demandID,
                 type: 'circle',
                 data: {
+                    thumbDir: demandObj.thumbDir,
+                    thumbName: demandObj.thumbName,
                     userDemand: demandObj.userIRPTU,
                     intermDemand: demandObj.intermIRPTU,
                     timeUnit: timeUnit
