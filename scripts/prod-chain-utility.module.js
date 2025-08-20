@@ -7,6 +7,7 @@
 import { getTimeUnitConversionRatio } from "./helpers.module.js"
 import * as validators from "./validators.module.js"
 import recipes from './recipes.module.js'
+import { updateProdChainCrafterData } from "./irptu-calculators.module.js"
 
 /**
  * Used to parse and return the user demand of a prod chain data object
@@ -85,21 +86,59 @@ function recalculateTimeUnit(prodChainObject, newTimeUnit) {
  * @returns An empty object representation of a production chain
  */
 function createProductionChainObject(){
+    let timeUnit = "minute"
+
     if (arguments.length === 1 && typeof arguments[0] === 'string') {
         validators.validateTimeUnit(arguments[0])
         
-        return {
-            timeUnit: arguments[0],
-            prodChain: {}
-        }
+        timeUnit = arguments[0]
     }  
 
     return {
-        timeUnit: "minute",
+        timeUnit,
+        crafterConfig: {
+            "miner": "electric-mining-drill",
+            "smelter": "steel-furnace",
+            "assembler": "assembling-machine-1",
+            "fluid-assembler": "assembling-machine-2",
+            "chem": "chemical-plant",
+            "centrifuge": "centrifuge",
+            "oil-pump": "pumpjack",
+            "refinery": "oil-refinery",
+            "silo": "rocket-silo",
+            "reactor": "nuclear-reactor",
+            "water-pump": "offshore-pump",
+            "manual": ""
+        },
         prodChain: {}
     }
 }
 
+function getItemIconPath(name) {
+    const thumbDir = name.replace(/\s+/g, '_') + '.png';
+    const thumbName = `32px-${thumbDir}`;
+    return `/assets/client_thumbs/${thumbDir}/${thumbName}`;
+}
+
+function setCrafterConfigOfProdChain(newCrafterConfig, prodChainObject) {
+    prodChainObject.crafterConfig = { ...newCrafterConfig }
+    for (const itemID in prodChainObject.prodChain) {
+        let item = prodChainObject.prodChain[itemID];
+        const crafterCategory = recipes[itemID]['crafter-category'];
+        const crafter = newCrafterConfig[crafterCategory];
+        const crafterName = recipes[crafter]["name"]
+        const crafterThumbPath = getItemIconPath(crafterName)
+        item = { 
+            ...item,
+            crafterThumbPath,
+            crafter
+        }
+        prodChainObject.prodChain[itemID] = item
+    }
+    prodChainObject.prodChain = updateProdChainCrafterData(prodChainObject.prodChain, prodChainObject.timeUnit)
+    return prodChainObject
+}
+
 export {
-    getUserDemand, getItemIDs, getItemNamesAndIDs, recalculateTimeUnit, createProductionChainObject
+    getUserDemand, getItemIDs, getItemNamesAndIDs, recalculateTimeUnit, createProductionChainObject, getItemIconPath, setCrafterConfigOfProdChain
 }
