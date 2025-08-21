@@ -7,7 +7,7 @@
 import { getTimeUnitConversionRatio } from "./helpers.module.js"
 import * as validators from "./validators.module.js"
 import recipes from './recipes.module.js'
-import { updateProdChainCrafterData } from "./irptu-calculators.module.js"
+import { updateProdChainCrafterDemand, updateProdChainBeltDemand } from "./irptu-calculators.module.js"
 
 /**
  * Used to parse and return the user demand of a prod chain data object
@@ -110,6 +110,9 @@ function createProductionChainObject(){
             "water-pump": "offshore-pump",
             "manual": ""
         },
+        beltConfig: {
+            "belt-type": "transport-belt"
+        },
         prodChain: {}
     }
 }
@@ -120,25 +123,18 @@ function getItemIconPath(name) {
     return `/assets/client_thumbs/${thumbDir}/${thumbName}`;
 }
 
-function setCrafterConfigOfProdChain(newCrafterConfig, prodChainObject) {
+function setCrafterConfig(newCrafterConfig, prodChainObject) {
     prodChainObject.crafterConfig = { ...newCrafterConfig }
-    for (const itemID in prodChainObject.prodChain) {
-        let item = prodChainObject.prodChain[itemID];
-        const crafterCategory = recipes[itemID]['crafter-category'];
-        const crafter = newCrafterConfig[crafterCategory];
-        const crafterName = recipes[crafter]["name"]
-        const crafterThumbPath = getItemIconPath(crafterName)
-        item = { 
-            ...item,
-            crafterThumbPath,
-            crafter
-        }
-        prodChainObject.prodChain[itemID] = item
-    }
-    prodChainObject.prodChain = updateProdChainCrafterData(prodChainObject.prodChain, prodChainObject.timeUnit)
+    prodChainObject.prodChain = updateProdChainCrafterDemand(prodChainObject.prodChain, prodChainObject.timeUnit, newCrafterConfig)
+    return prodChainObject
+}
+
+function setBeltConfig(newBeltConfig, prodChainObject) {
+    prodChainObject.beltConfig = { ...newBeltConfig }
+    prodChainObject.prodChain = updateProdChainBeltDemand(prodChainObject.prodChain, prodChainObject.timeUnit, newBeltConfig)
     return prodChainObject
 }
 
 export {
-    getUserDemand, getItemIDs, getItemNamesAndIDs, recalculateTimeUnit, createProductionChainObject, getItemIconPath, setCrafterConfigOfProdChain
+    getUserDemand, getItemIDs, getItemNamesAndIDs, recalculateTimeUnit, createProductionChainObject, getItemIconPath, setCrafterConfig, setBeltConfig
 }

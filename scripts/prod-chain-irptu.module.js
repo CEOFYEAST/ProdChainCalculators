@@ -30,11 +30,12 @@ function addIRPTU(itemID, amount, prodChainObject, timeUnit) {
 
     let demandInfoOutput = {}
     const crafterConfig = prodChainObject["crafterConfig"]
-    const currTimeUnit = prodChainObject["timeUnit"]
+    const beltConfig = prodChainObject["beltConfig"]
     Calculators.calculateIntermediaryDemand(itemID, amount, demandInfoOutput)
-    Calculators.updateProdChainIntermediaryDemand(prodChainData, crafterConfig, demandInfoOutput)
-    Calculators.updateProdChainUserDemand(itemID, amount, prodChainData, crafterConfig)
-    Calculators.updateProdChainCrafterData(prodChainData, timeUnit)
+    Calculators.updateProdChainIntermediaryDemand(prodChainData, demandInfoOutput)
+    Calculators.updateProdChainUserDemand(itemID, amount, prodChainData)
+    Calculators.updateProdChainCrafterDemand(prodChainData, timeUnit, crafterConfig)
+    Calculators.updateProdChainBeltDemand(prodChainData, timeUnit, beltConfig)
     Calculators.clearEmptyData(prodChainData)
 
     prodChainObject["prodChain"] = prodChainData
@@ -64,11 +65,12 @@ function subtractIRPTU(itemID, amount, prodChainObject, timeUnit) {
     amount = amount * -1;
     let demandInfoOutput = {}
     const crafterConfig = prodChainObject["crafterConfig"]
-    const currTimeUnit = prodChainObject["timeUnit"]
+    const beltConfig = prodChainObject["beltConfig"]
     Calculators.calculateIntermediaryDemand(itemID, amount, demandInfoOutput)
-    Calculators.updateProdChainIntermediaryDemand(prodChainData, crafterConfig, demandInfoOutput)
-    Calculators.updateProdChainUserDemand(itemID, amount, prodChainData, crafterConfig)
-    Calculators.updateProdChainCrafterData(prodChainData, timeUnit)
+    Calculators.updateProdChainIntermediaryDemand(prodChainData, demandInfoOutput)
+    Calculators.updateProdChainUserDemand(itemID, amount, prodChainData)
+    Calculators.updateProdChainCrafterDemand(prodChainData, timeUnit, crafterConfig)
+    Calculators.updateProdChainBeltDemand(prodChainData, timeUnit, beltConfig)
     Calculators.clearEmptyData(prodChainData)
 
     prodChainObject["prodChain"] = prodChainData

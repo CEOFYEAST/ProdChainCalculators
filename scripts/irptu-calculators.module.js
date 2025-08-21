@@ -9,7 +9,7 @@ import { getTimeUnitConversionRatio } from "./helpers.module.js"
 import { getItemIconPath } from "./prod-chain-utility.module.js"
 
 function calculateIntermediaryDemand(reqItem_ID, reqItem_IRPTU, demandOutput){
-    tryAddRequiredItem(reqItem_ID, demandOutput)
+    tryAddRequiredItemDemand(reqItem_ID, demandOutput)
 
     let reqItem_Info = recipes[reqItem_ID]; // general info about item
     let reqItem_Type = reqItem_Info["Type"]; // type of item i.e. Machinery, Intermediate product
@@ -36,7 +36,7 @@ function calculateIntermediaryDemand(reqItem_ID, reqItem_IRPTU, demandOutput){
             intermediary_IRPTU = intermediary_IRPC * reqItem_CRPTU;
         }
 
-        tryAddRequiredItem(intermediary_ID, demandOutput);
+        tryAddRequiredItemDemand(intermediary_ID, demandOutput);
 
         addIntermediaryDemand(intermediary_ID, intermediary_IRPTU, demandOutput);
 
@@ -53,39 +53,40 @@ function calculateIntermediaryDemand(reqItem_ID, reqItem_IRPTU, demandOutput){
  * Adds the demand from the supplied demand data object to the supplied production chain data object
  * Demand being added can be positive or negative
  */
-function updateProdChainIntermediaryDemand(prodChainData, crafterConfig, demandOutput){
+function updateProdChainIntermediaryDemand(prodChainData, demandOutput){
     for (let requiredItemID in demandOutput) {
-        tryAddItemData(requiredItemID, crafterConfig, prodChainData)
+        tryAddRequiredItemData(requiredItemID, prodChainData)
 
+        // update top-level item demand
         let requiredItemDemand = demandOutput[requiredItemID]
         let requiredItemData = prodChainData[requiredItemID]
         requiredItemData["intermIRPTU"] += requiredItemDemand["IRPTU"]
 
         // update dependent items demand
-        for(let dependentItemID in requiredItemDemand["dependentItems"]){
-            if (!requiredItemData["dependentItems"].hasOwnProperty(dependentItemID)) {
-                requiredItemData["dependentItems"][dependentItemID] = 0;
+        const dependentItemsDemand = requiredItemDemand["dependentItems"]
+        const dependentItemsData = requiredItemData["dependentItems"]
+        for(let dependentItemID in dependentItemsDemand){
+            if (!dependentItemsData.hasOwnProperty(dependentItemID)) {
+                tryAddDependentData(dependentItemID, requiredItemData)
             }
-
-            requiredItemData["dependentItems"][dependentItemID] += 
-            requiredItemDemand["dependentItems"][dependentItemID];
-
-            if (requiredItemData["dependentItems"][dependentItemID] == 0) {
+            const dependentItemData = requiredItemData["dependentItems"][dependentItemID]
+            dependentItemData["IRPTU"] += dependentItemsDemand[dependentItemID];
+            if (dependentItemData[dependentItemID] == 0) {
                 delete requiredItemData["dependentItems"][dependentItemID];
             }
         }
 
-        // update ingredient items demand
-        for(let ingredientItemID in requiredItemDemand["ingredientItems"]){
-            if (!requiredItemData["ingredientItems"].hasOwnProperty(ingredientItemID)) {
-                requiredItemData["ingredientItems"][ingredientItemID] = 0;
+       // update ingredient items demand
+        const ingredientItemsDemand = requiredItemDemand["ingredientItems"]
+        for(let ingredItemID in ingredientItemsDemand){
+            const ingredientItemsData = requiredItemData["ingredientItems"]
+            if (!ingredientItemsData.hasOwnProperty(ingredItemID)) {
+                tryAddIngredientData(ingredItemID, requiredItemData)
             }
-
-            requiredItemData["ingredientItems"][ingredientItemID] += 
-            requiredItemDemand["ingredientItems"][ingredientItemID];
-
-            if (requiredItemData["ingredientItems"][ingredientItemID] == 0) {
-                delete requiredItemData["ingredientItems"][ingredientItemID];
+            const ingredItemData = requiredItemData["ingredientItems"][ingredItemID]
+            ingredItemData["IRPTU"] += ingredientItemsDemand[ingredItemID];
+            if (ingredItemData[ingredItemID] == 0) {
+                delete requiredItemData["ingredientItems"][ingredItemID];
             }
         }
 
@@ -95,54 +96,75 @@ function updateProdChainIntermediaryDemand(prodChainData, crafterConfig, demandO
     return prodChainData
 }
 
-function updateProdChainUserDemand(itemID, amount, prodChainData, crafterConfig){
-    tryAddItemData(itemID, crafterConfig, prodChainData);
+function updateProdChainUserDemand(itemID, amount, prodChainData){
+    tryAddRequiredItemData(itemID, prodChainData);
 
     prodChainData[itemID]["userIRPTU"] += amount
 }
 
-function updateProdChainCrafterData(prodChainData, timeUnit) {
-    for (let requiredItemID in prodChainData) {
-        // update crafter count demand
-        /**
-         * - Perform multiplication of craft time vs crafter speed to get time per craft in seconds
-         * - Convert time per craft to proper time unit
-         * - Multiply time per craft by crafts required per time unit to get total time required for all crafts
-         * - divide total time required by time per craft to get count of crafters required
-         */
-        let requiredItemData = prodChainData[requiredItemID]
+function updateProdChainCrafterDemand(prodChainData, timeUnit, crafterConfig) {
+   
+    for (let reqItemID in prodChainData) {
+        const reqItemData = { ...prodChainData[reqItemID] } // copy is used to avoid side-effects
 
-        const recipe = recipes[requiredItemID]
-        const craftTime = recipe["recipe"]["time"]
-        const recipeYield = recipe["recipe"]["yield"]
-        if(craftTime === null || recipeYield === null) {
-            requiredItemData["crafterCount"] = "N/A"
-        } else {
-            const crafter = requiredItemData["crafter"]
-            const crafterSpeed = recipes[crafter]["crafting-speed"]
-            const craftTimePerItem = (craftTime / crafterSpeed) / recipeYield;
-            const craftRate = getTimeUnitConversionRatio("second", timeUnit) / craftTimePerItem;
-            const targetRate = requiredItemData["userIRPTU"] + requiredItemData["intermIRPTU"];
-            const craftersRequired = targetRate / craftRate;
-            requiredItemData["crafterCount"] = craftersRequired
+        // update top-level item's crafter demand
+        const reqItemDemand = reqItemData["userIRPTU"] + reqItemData["intermIRPTU"];
+        addOrUpdateCrafterData(reqItemID, reqItemDemand, timeUnit, crafterConfig, reqItemData)
+
+        // update dependent items' crafter demands
+        const dependentItems = reqItemData["dependentItems"]
+        for(let dependentItemID in dependentItems){
+            const dependentData = dependentItems[dependentItemID]
+            const dependentDemand = dependentData["IRPTU"]
+            addOrUpdateCrafterData(dependentItemID, dependentDemand, timeUnit, crafterConfig, dependentData)
         }
 
-        prodChainData[requiredItemID] = requiredItemData;
+        // update ingredient items' crafter demands
+        const ingredItems = reqItemData["ingredientItems"]
+        for(let ingredItemID in ingredItems){
+            const ingredData = ingredItems[ingredItemID]
+            const ingredDemand = ingredData["IRPTU"]
+            addOrUpdateCrafterData(ingredItemID, ingredDemand, timeUnit, crafterConfig, ingredData)
+        }
+
+        prodChainData[reqItemID] = reqItemData
     }
 
     return prodChainData
 }
 
-function clearEmptyData(prodChainData){
-    for(let itemID in prodChainData){
-        let itemData = prodChainData[itemID]
-        if(itemData["userIRPTU"] == 0 && itemData["intermIRPTU"] == 0) {
-            delete prodChainData[itemID];
+function updateProdChainBeltDemand(prodChainData, timeUnit, beltConfig) {
+
+    for (let reqItemID in prodChainData) {
+        const reqItemData = { ...prodChainData[reqItemID] } // copy is used to avoid side-effects
+
+        // update top-level item's crafter demand
+        const reqItemDemand = reqItemData["userIRPTU"] + reqItemData["intermIRPTU"];
+        addOrUpdateBeltData(reqItemID, reqItemDemand, timeUnit, beltConfig, reqItemData)
+
+        // update dependent items' crafter demands
+        const dependentItems = reqItemData["dependentItems"]
+        for(let dependentItemID in dependentItems){
+            const dependentData = dependentItems[dependentItemID]
+            const dependentDemand = dependentData["IRPTU"]
+            addOrUpdateBeltData(dependentItemID, dependentDemand, timeUnit, beltConfig, dependentData)
         }
+
+        // update ingredient items' crafter demands
+        const ingredItems = reqItemData["ingredientItems"]
+        for(let ingredItemID in ingredItems){
+            const ingredData = ingredItems[ingredItemID]
+            const ingredDemand = ingredData["IRPTU"]
+            addOrUpdateBeltData(ingredItemID, ingredDemand, timeUnit, beltConfig, ingredData)
+        }
+
+        prodChainData[reqItemID] = reqItemData
     }
+
+    return prodChainData
 }
 
-function tryAddItemData(itemID, crafterConfig, prodChainData) {
+function tryAddRequiredItemData(itemID, prodChainData) {
     // adds ingredient representation to output if it doesn't already exist.
     if (!prodChainData.hasOwnProperty(itemID)) {
         const name = recipes[itemID]["name"];
@@ -150,7 +172,6 @@ function tryAddItemData(itemID, crafterConfig, prodChainData) {
         let itemData = {
             name,
             thumbPath,
-            crafterCount: 0,
             userIRPTU: 0,
             intermIRPTU: 0,
             dependentItems: {},
@@ -158,20 +179,51 @@ function tryAddItemData(itemID, crafterConfig, prodChainData) {
         };
         prodChainData[itemID] = itemData;
     }
+}
 
+function tryAddDependentData(dependentItemID, requiredItemData) {
+    requiredItemData["dependentItems"][dependentItemID] = {
+        IRPTU: 0,
+    }
+}
+
+function tryAddIngredientData(ingredItemID, requiredItemData) {
+    requiredItemData["ingredientItems"][ingredItemID] = {
+        IRPTU: 0,
+    }
+}
+
+function addOrUpdateCrafterData(itemID, itemDemand, timeUnit, crafterConfig, itemData) {
     let crafterCategory = recipes[itemID]["crafter-category"];
     const crafter = crafterConfig[crafterCategory];
     const crafterName = recipes[crafter]["name"]
     const crafterThumbPath = getItemIconPath(crafterName)
+    const crafterCount = calculateCrafterCount(crafter, itemID, itemDemand, timeUnit)
 
-    prodChainData[itemID] = {
-        ...prodChainData[itemID],
+    itemData = {
+        ...itemData,
         crafterThumbPath,
-        crafter
+        crafter,
+        crafterCount
     }
 }
 
-function tryAddRequiredItem(itemID, demandOutput) 
+function addOrUpdateBeltData(itemID, itemDemand, timeUnit, beltConfig, itemData) {
+    const belt = beltConfig["belt-type"]
+    const beltName = recipes[belt]["name"]
+    const beltThumbPath = getItemIconPath(beltName)
+    const beltCount = calculateBeltCount(belt, itemDemand, timeUnit)
+
+    itemData = {
+        ...itemData,
+        belt,
+        beltName,
+        beltThumbPath,
+        beltCount
+    }
+}
+
+function tryAddRequiredItemDemand(itemID, demandOutput) 
 {
   if(!(demandOutput.hasOwnProperty(itemID))){
     let itemData = {
@@ -204,10 +256,41 @@ function addIngredientDemand(requiredItemID, intermediaryItemID, ingredient_IRPT
     demandOutput[requiredItemID]["ingredientItems"][intermediaryItemID] += ingredient_IRPTU;
 }
 
+function clearEmptyData(prodChainData){
+    for(let itemID in prodChainData){
+        let itemData = prodChainData[itemID]
+        if(itemData["userIRPTU"] == 0 && itemData["intermIRPTU"] == 0) {
+            delete prodChainData[itemID];
+        }
+    }
+}
+
+function calculateCrafterCount(crafterID, demandedItemID, demandIRPTU, demandTimeUnit) {
+    const recipe = recipes[demandedItemID]
+    const craftTime = recipe["recipe"]["time"]
+    const recipeYield = recipe["recipe"]["yield"]
+    if(craftTime === null || recipeYield === null) {
+        return "N/A"
+    }
+    const crafterSpeed = recipes[crafterID]["crafting-speed"]
+    const craftTimePerItem = (craftTime / crafterSpeed) / recipeYield;
+    const craftRate = getTimeUnitConversionRatio("second", demandTimeUnit) / craftTimePerItem;
+    const craftersRequired = demandIRPTU / craftRate;
+    return craftersRequired
+}
+
+function calculateBeltCount(belt, itemDemand, timeUnit) {
+    const throughputInSeconds = recipes[belt]["throughput"]
+    const throughputInTimeUnit = throughputInSeconds * getTimeUnitConversionRatio("second", timeUnit);
+    const beltsRequired = itemDemand / throughputInTimeUnit;
+    return beltsRequired
+}
+
 export {
     calculateIntermediaryDemand,
     updateProdChainIntermediaryDemand,
     updateProdChainUserDemand,
-    updateProdChainCrafterData,
+    updateProdChainCrafterDemand,
+    updateProdChainBeltDemand,
     clearEmptyData
 }
