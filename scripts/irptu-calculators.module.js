@@ -107,16 +107,18 @@ function updateProdChainCrafterDemand(prodChainData, timeUnit, crafterConfig) {
     for (let reqItemID in prodChainData) {
         const reqItemData = { ...prodChainData[reqItemID] } // copy is used to avoid side-effects
 
-        // update top-level item's crafter demand
+        // update top-level item's crafter demand       
         const reqItemDemand = reqItemData["userIRPTU"] + reqItemData["intermIRPTU"];
-        addOrUpdateCrafterData(reqItemID, reqItemDemand, timeUnit, crafterConfig, reqItemData)
+        prodChainData[reqItemID] = 
+            addOrUpdateCrafterData(reqItemID, reqItemDemand, timeUnit, crafterConfig, reqItemData)
 
         // update dependent items' crafter demands
         const dependentItems = reqItemData["dependentItems"]
         for(let dependentItemID in dependentItems){
             const dependentData = dependentItems[dependentItemID]
             const dependentDemand = dependentData["IRPTU"]
-            addOrUpdateCrafterData(dependentItemID, dependentDemand, timeUnit, crafterConfig, dependentData)
+            dependentItems[dependentItemID] = 
+                addOrUpdateCrafterData(dependentItemID, dependentDemand, timeUnit, crafterConfig, dependentData)
         }
 
         // update ingredient items' crafter demands
@@ -124,10 +126,9 @@ function updateProdChainCrafterDemand(prodChainData, timeUnit, crafterConfig) {
         for(let ingredItemID in ingredItems){
             const ingredData = ingredItems[ingredItemID]
             const ingredDemand = ingredData["IRPTU"]
-            addOrUpdateCrafterData(ingredItemID, ingredDemand, timeUnit, crafterConfig, ingredData)
+            ingredItems[ingredItemID] = 
+                addOrUpdateCrafterData(ingredItemID, ingredDemand, timeUnit, crafterConfig, ingredData)
         }
-
-        prodChainData[reqItemID] = reqItemData
     }
 
     return prodChainData
@@ -138,27 +139,28 @@ function updateProdChainBeltDemand(prodChainData, timeUnit, beltConfig) {
     for (let reqItemID in prodChainData) {
         const reqItemData = { ...prodChainData[reqItemID] } // copy is used to avoid side-effects
 
-        // update top-level item's crafter demand
+        // update top-level item's belt demand
         const reqItemDemand = reqItemData["userIRPTU"] + reqItemData["intermIRPTU"];
-        addOrUpdateBeltData(reqItemID, reqItemDemand, timeUnit, beltConfig, reqItemData)
+        prodChainData[reqItemID] = 
+            addOrUpdateBeltData(reqItemID, reqItemDemand, timeUnit, beltConfig, reqItemData)
 
-        // update dependent items' crafter demands
+        // update dependent items' belt demand
         const dependentItems = reqItemData["dependentItems"]
         for(let dependentItemID in dependentItems){
             const dependentData = dependentItems[dependentItemID]
             const dependentDemand = dependentData["IRPTU"]
-            addOrUpdateBeltData(dependentItemID, dependentDemand, timeUnit, beltConfig, dependentData)
+            dependentItems[dependentItemID] = 
+                addOrUpdateBeltData(dependentItemID, dependentDemand, timeUnit, beltConfig, dependentData)
         }
 
-        // update ingredient items' crafter demands
+        // update ingredient items' belt demand
         const ingredItems = reqItemData["ingredientItems"]
         for(let ingredItemID in ingredItems){
             const ingredData = ingredItems[ingredItemID]
             const ingredDemand = ingredData["IRPTU"]
-            addOrUpdateBeltData(ingredItemID, ingredDemand, timeUnit, beltConfig, ingredData)
+            ingredItems[ingredItemID] = 
+                addOrUpdateBeltData(ingredItemID, ingredDemand, timeUnit, beltConfig, ingredData)
         }
-
-        prodChainData[reqItemID] = reqItemData
     }
 
     return prodChainData
@@ -200,12 +202,14 @@ function addOrUpdateCrafterData(itemID, itemDemand, timeUnit, crafterConfig, ite
     const crafterThumbPath = getItemIconPath(crafterName)
     const crafterCount = calculateCrafterCount(crafter, itemID, itemDemand, timeUnit)
 
-    itemData = {
+    const newItemData = {
         ...itemData,
         crafterThumbPath,
         crafter,
         crafterCount
     }
+
+    return newItemData
 }
 
 function addOrUpdateBeltData(itemID, itemDemand, timeUnit, beltConfig, itemData) {
@@ -214,13 +218,15 @@ function addOrUpdateBeltData(itemID, itemDemand, timeUnit, beltConfig, itemData)
     const beltThumbPath = getItemIconPath(beltName)
     const beltCount = calculateBeltCount(belt, itemDemand, timeUnit)
 
-    itemData = {
+    const newItemData = {
         ...itemData,
         belt,
         beltName,
         beltThumbPath,
         beltCount
     }
+
+    return newItemData
 }
 
 function tryAddRequiredItemDemand(itemID, demandOutput) 
