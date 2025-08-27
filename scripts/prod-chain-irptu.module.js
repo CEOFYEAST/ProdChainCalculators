@@ -31,11 +31,12 @@ function addIRPTU(itemID, amount, prodChainObject, timeUnit) {
     let demandInfoOutput = {}
     const crafterConfig = prodChainObject["crafterConfig"]
     const beltConfig = prodChainObject["beltConfig"]
+    const prodChainTimeUnit = prodChainObject["timeUnit"]
     Calculators.calculateIntermediaryDemand(itemID, amount, demandInfoOutput)
     Calculators.updateProdChainIntermediaryDemand(prodChainData, demandInfoOutput)
     Calculators.updateProdChainUserDemand(itemID, amount, prodChainData)
-    Calculators.updateProdChainCrafterDemand(prodChainData, timeUnit, crafterConfig)
-    Calculators.updateProdChainBeltDemand(prodChainData, timeUnit, beltConfig)
+    Calculators.updateProdChainCrafterDemand(prodChainData, prodChainTimeUnit, crafterConfig)
+    Calculators.updateProdChainBeltDemand(prodChainData, prodChainTimeUnit, beltConfig)
     Calculators.clearEmptyData(prodChainData)
 
     prodChainObject["prodChain"] = prodChainData
@@ -66,11 +67,12 @@ function subtractIRPTU(itemID, amount, prodChainObject, timeUnit) {
     let demandInfoOutput = {}
     const crafterConfig = prodChainObject["crafterConfig"]
     const beltConfig = prodChainObject["beltConfig"]
+    const prodChainTimeUnit = prodChainObject["timeUnit"]
     Calculators.calculateIntermediaryDemand(itemID, amount, demandInfoOutput)
     Calculators.updateProdChainIntermediaryDemand(prodChainData, demandInfoOutput)
     Calculators.updateProdChainUserDemand(itemID, amount, prodChainData)
-    Calculators.updateProdChainCrafterDemand(prodChainData, timeUnit, crafterConfig)
-    Calculators.updateProdChainBeltDemand(prodChainData, timeUnit, beltConfig)
+    Calculators.updateProdChainCrafterDemand(prodChainData, prodChainTimeUnit, crafterConfig)
+    Calculators.updateProdChainBeltDemand(prodChainData, prodChainTimeUnit, beltConfig)
     Calculators.clearEmptyData(prodChainData)
 
     prodChainObject["prodChain"] = prodChainData
