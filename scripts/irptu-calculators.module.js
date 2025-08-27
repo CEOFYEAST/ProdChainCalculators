@@ -213,7 +213,9 @@ function addOrUpdateCrafterData(itemID, itemDemand, timeUnit, crafterConfig, ite
 }
 
 function addOrUpdateBeltData(itemID, itemDemand, timeUnit, beltConfig, itemData) {
-    const belt = beltConfig["belt-type"]
+    let belt = beltConfig["belt-type"]
+    const itemType = recipes[itemID]["type"]
+    if(itemType === "Liquid") belt = beltConfig["pipe-type"];
     const beltName = recipes[belt]["name"]
     const beltThumbPath = getItemIconPath(beltName)
     const beltCount = calculateBeltCount(belt, itemDemand, timeUnit)

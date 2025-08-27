@@ -111,7 +111,8 @@ function createProductionChainObject(){
             "manual": ""
         },
         beltConfig: {
-            "belt-type": "transport-belt"
+            "belt-type": "transport-belt",
+            "pipe-type": "pipe"
         },
         prodChain: {}
     }
